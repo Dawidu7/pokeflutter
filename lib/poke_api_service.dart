@@ -20,7 +20,7 @@ class PokeApiService {
           .map((json) => PokemonListItem.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      throw Exception("Nie udało się pobrać listy: $e");
+      throw Exception("Couldn't fetch list: $e");
     }
   }
 
@@ -36,7 +36,7 @@ class PokeApiService {
       final data = jsonDecode(response.body);
       return PokemonDetailsModel.fromJson(data);
     } catch (e) {
-      throw Exception("Nie udało się pobrać szczegółów: $e");
+      throw Exception("Couldn't fetch details: $e");
     }
   }
 }

@@ -111,7 +111,7 @@ class _PokemonDetailsState extends State<PokemonDetails> {
       child: Row(
         children: [
           SizedBox(
-            width: 45,
+            width: 120,
             child: Text(
               label,
               style: TextStyle(
@@ -121,7 +121,7 @@ class _PokemonDetailsState extends State<PokemonDetails> {
             ),
           ),
           SizedBox(
-            width: 80,
+            width: 40,
             child: Text(
               "$value",
               textAlign: TextAlign.center,
@@ -159,10 +159,23 @@ class _PokemonDetailsState extends State<PokemonDetails> {
 
         if (snapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(title: const Text("Błąd")),
+            appBar: AppBar(title: const Text("Error")),
             body: Center(
               child: Text(
-                "Wystąpił błąd:\n${snapshot.error}",
+                "An error occured:\n${snapshot.error}",
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(title: const Text("Error")),
+            body: Center(
+              child: Text(
+                "No data",
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.red),
               ),
@@ -237,15 +250,15 @@ class _PokemonDetailsState extends State<PokemonDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildInfoColumn("Waga", "${details.weight} KG"),
-                          _buildInfoColumn("Wzrost", "${details.height} M"),
+                          _buildInfoColumn("Weight", "${details.weight} KG"),
+                          _buildInfoColumn("Height", "${details.height} M"),
                         ],
                       ),
                       const SizedBox(height: 40),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Statystyki (Base Stats)",
+                          "Stats",
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -254,11 +267,19 @@ class _PokemonDetailsState extends State<PokemonDetails> {
                       ),
                       const SizedBox(height: 20),
                       _buildStatRow("HP", details.hp, primaryColor),
-                      _buildStatRow("ATK", details.atk, primaryColor),
-                      _buildStatRow("DEF", details.def, primaryColor),
-                      _buildStatRow("SATK", details.spAtk, primaryColor),
-                      _buildStatRow("SDEF", details.spDef, primaryColor),
-                      _buildStatRow("SPD", details.speed, primaryColor),
+                      _buildStatRow("Attack", details.atk, primaryColor),
+                      _buildStatRow("Defense", details.def, primaryColor),
+                      _buildStatRow(
+                        "Special Attack",
+                        details.spAtk,
+                        primaryColor,
+                      ),
+                      _buildStatRow(
+                        "Special Defense",
+                        details.spDef,
+                        primaryColor,
+                      ),
+                      _buildStatRow("Speed", details.speed, primaryColor),
                       const SizedBox(height: 30),
                     ],
                   ),

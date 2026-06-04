@@ -38,7 +38,7 @@ class _PokemonListState extends State<PokemonList> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  "Wystąpił błąd:\n${snapshot.error}",
+                  "An error occured:\n${snapshot.error}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.red, fontSize: 16),
                 ),
@@ -47,7 +47,7 @@ class _PokemonListState extends State<PokemonList> {
           }
 
           if (!snapshot.hasData) {
-            return const Center(child: Text("Brak danych"));
+            return const Center(child: Text("No data"));
           }
 
           final pokemons = snapshot.data!;
