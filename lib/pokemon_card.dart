@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:pokeflutter/pokemon_details.dart";
 import "package:pokeflutter/pokemon_list_item.dart";
 
 class PokemonCard extends StatelessWidget {
@@ -14,7 +15,12 @@ class PokemonCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
         onTap: () {
-          // TODO: Pokemon Details
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PokemonDetails(pokemon: pokemon),
+            ),
+          );
         },
         child: Padding(
           padding: EdgeInsets.all(8),
@@ -22,7 +28,7 @@ class PokemonCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "#${pokemon.id.padLeft(4, '0')}",
+                pokemon.index,
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.grey.shade600,

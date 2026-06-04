@@ -12,12 +12,11 @@ class PokemonList extends StatefulWidget {
 
 class _PokemonListState extends State<PokemonList> {
   late Future<List<PokemonListItem>> _pokemonList;
-  final PokeApiService _apiService = PokeApiService();
 
   @override
   void initState() {
     super.initState();
-    _pokemonList = _apiService.fetchPokemonList();
+    _pokemonList = PokeApiService.fetchPokemonList();
   }
 
   @override
