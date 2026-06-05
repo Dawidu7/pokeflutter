@@ -161,6 +161,19 @@ class _PokemonDetailsState extends State<PokemonDetails> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: Icon(
+              PokeApiService.isFavourite(widget.pokemon.id)
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+            ),
+            onPressed: () async {
+              await PokeApiService.toggleFavourite(widget.pokemon);
+              setState(() {});
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<PokemonDetailsModel>(
         future: _pokemonDetails,

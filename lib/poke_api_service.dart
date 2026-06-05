@@ -7,6 +7,7 @@ import "package:pokeflutter/pokemon_list_item.dart";
 class PokeApiService {
   static final Box _pokemonList = Hive.box("pokemon_list");
   static final Box _pokemonDetails = Hive.box("pokemon_details");
+  static final Box _favourites = Hive.box("favourites");
 
   static Future<List<PokemonListItem>> fetchPokemonList() async {
     const url = "https://pokeapi.co/api/v2/pokemon?limit=151";
@@ -64,5 +65,28 @@ class PokeApiService {
 
       throw Exception("Couldn't fetch details: $e");
     }
+  }
+
+  static bool isFavourite(String id) {
+    return _favourites.containsKey(id);
+  }
+
+  static Future<void> toggleFavourite(PokemonListItem pokemon) async {
+    if (isFavourite(pokemon.id)) {
+      return await _favourites.delete(pokemon.id);
+    }
+    await _favourites.put(pokemon.id, {
+      "name": pokemon.name.toLowerCase(),
+      "url": "https://pokeapi.co/api/v2/pokemon/${pokemon.id}/",
+    });
+  }
+
+  static List<PokemonListItem> getFavourites() {
+    return _favourites.values
+        .map(
+          (json) =>
+              PokemonListItem.fromJson(Map<String, dynamic>.from(json as Map)),
+        )
+        .toList();
   }
 }

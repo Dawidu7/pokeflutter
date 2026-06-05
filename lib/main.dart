@@ -7,6 +7,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("pokemon_list");
   await Hive.openBox("pokemon_details");
+  await Hive.openBox("favourites");
   runApp(const Pokedex());
 }
 
@@ -16,7 +17,7 @@ class Pokedex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Pokedex",
+      title: "Pokédex",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,

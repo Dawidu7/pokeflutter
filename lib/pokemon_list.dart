@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:pokeflutter/poke_api_service.dart";
 import "package:pokeflutter/pokemon_card.dart";
 import "package:pokeflutter/pokemon_list_item.dart";
+import "package:pokeflutter/favourites_list.dart";
 
 class PokemonList extends StatefulWidget {
   const PokemonList({super.key});
@@ -25,6 +26,19 @@ class _PokemonListState extends State<PokemonList> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Pokédex"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FavouritesList()),
+              ).then((_) {
+                setState(() {});
+              });
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<PokemonListItem>>(
         future: _pokemonList,
