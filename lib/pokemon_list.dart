@@ -3,6 +3,7 @@ import "package:pokeflutter/poke_api_service.dart";
 import "package:pokeflutter/pokemon_card.dart";
 import "package:pokeflutter/pokemon_list_item.dart";
 import "package:pokeflutter/favourites_list.dart";
+import "package:pokeflutter/settings.dart";
 
 class PokemonList extends StatefulWidget {
   const PokemonList({super.key});
@@ -44,6 +45,15 @@ class _PokemonListState extends State<PokemonList> {
               ).then((_) {
                 setState(() {});
               });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Settings()),
+              );
             },
           ),
         ],
