@@ -1,4 +1,5 @@
 import "package:cached_network_image/cached_network_image.dart";
+import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/material.dart";
 import "package:pokeflutter/poke_api_service.dart";
 import "package:pokeflutter/pokemon_details_model.dart";
@@ -20,6 +21,11 @@ class _PokemonDetailsState extends State<PokemonDetails> {
   void initState() {
     super.initState();
     _pokemonDetails = PokeApiService.fetchPokemonDetails(widget.pokemon.id);
+
+    FirebaseAnalytics.instance.logEvent(
+      name: "view_pokemon",
+      parameters: {"name": widget.pokemon.name, "id": widget.pokemon.id},
+    );
   }
 
   void _retryFetch() {
@@ -170,6 +176,14 @@ class _PokemonDetailsState extends State<PokemonDetails> {
             ),
             onPressed: () async {
               await PokeApiService.toggleFavourite(widget.pokemon);
+
+              if (PokeApiService.isFavourite(widget.pokemon.id)) {
+                FirebaseAnalytics.instance.logEvent(
+                  name: "add_to_favourites",
+                  parameters: {"name": widget.pokemon.name},
+                );
+              }
+
               setState(() {});
             },
           ),

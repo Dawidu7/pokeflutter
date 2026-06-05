@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:firebase_analytics/firebase_analytics.dart";
 import "package:pokeflutter/poke_api_service.dart";
 import "package:pokeflutter/pokemon_card.dart";
 import "package:pokeflutter/pokemon_list_item.dart";
@@ -22,6 +23,7 @@ class _PokemonListState extends State<PokemonList> {
   }
 
   Future<void> _refreshData() async {
+    FirebaseAnalytics.instance.logEvent(name: "refresh_pokemon_list");
     final refreshedList = PokeApiService.fetchPokemonList();
     setState(() {
       _pokemonList = refreshedList;
