@@ -1,3 +1,4 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:pokeflutter/pokemon_details.dart";
 import "package:pokeflutter/pokemon_list_item.dart";
@@ -39,11 +40,11 @@ class PokemonCard extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Image.network(
-                    pokemon.imageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: pokemon.imageUrl,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.image_not_supported, size: 40),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.broken_image, size: 40),
                   ),
                 ),
               ),

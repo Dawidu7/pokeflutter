@@ -1,3 +1,4 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:pokeflutter/poke_api_service.dart";
 import "package:pokeflutter/pokemon_details_model.dart";
@@ -19,6 +20,12 @@ class _PokemonDetailsState extends State<PokemonDetails> {
   void initState() {
     super.initState();
     _pokemonDetails = PokeApiService.fetchPokemonDetails(widget.pokemon.id);
+  }
+
+  void _retryFetch() {
+    setState(() {
+      _pokemonDetails = PokeApiService.fetchPokemonDetails(widget.pokemon.id);
+    });
   }
 
   Color _getTypeColor(String type) {
@@ -147,62 +154,86 @@ class _PokemonDetailsState extends State<PokemonDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PokemonDetailsModel>(
-      future: _pokemonDetails,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: FutureBuilder<PokemonDetailsModel>(
+        future: _pokemonDetails,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(title: const Text("Error")),
-            body: Center(
-              child: Text(
-                "An error occured:\n${snapshot.error}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.wifi_off_rounded,
+                      size: 80,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      "Oh no! The wild Pokémon fled.",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Please check your internet connection and try again.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      onPressed: _retryFetch,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("Try Again"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade800,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (!snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(title: const Text("Error")),
-            body: Center(
-              child: Text(
-                "No data",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        }
+          final details = snapshot.data!;
+          final primaryColor = _getTypeColor(details.types.first);
 
-        final details = snapshot.data!;
-        final primaryColor = _getTypeColor(details.types.first);
-
-        return Scaffold(
-          backgroundColor: primaryColor,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body: SingleChildScrollView(
+          return SingleChildScrollView(
             child: Stack(
               children: [
                 Container(
-                  height: 250,
+                  height: 300,
                   width: double.infinity,
                   color: primaryColor,
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 200),
+                  margin: const EdgeInsets.only(top: 220),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
@@ -250,8 +281,8 @@ class _PokemonDetailsState extends State<PokemonDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildInfoColumn("Weight", "${details.weight} KG"),
-                          _buildInfoColumn("Height", "${details.height} M"),
+                          _buildInfoColumn("Weight", "${details.weight} kg"),
+                          _buildInfoColumn("Height", "${details.height} m"),
                         ],
                       ),
                       const SizedBox(height: 40),
@@ -285,27 +316,24 @@ class _PokemonDetailsState extends State<PokemonDetails> {
                   ),
                 ),
                 Positioned(
-                  top: 30,
+                  top: 70,
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: Image.network(
-                      widget.pokemon.imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.pokemon.imageUrl,
                       height: 230,
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.image_not_supported,
-                        size: 100,
-                        color: Colors.white54,
-                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.broken_image, size: 100),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

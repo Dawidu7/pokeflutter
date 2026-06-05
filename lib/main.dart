@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
+import "package:hive_ce_flutter/hive_flutter.dart";
 import "package:pokeflutter/pokemon_list.dart";
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox("pokemon_list");
+  await Hive.openBox("pokemon_details");
   runApp(const Pokedex());
 }
 
