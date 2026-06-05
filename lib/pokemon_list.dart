@@ -20,6 +20,14 @@ class _PokemonListState extends State<PokemonList> {
     _pokemonList = PokeApiService.fetchPokemonList();
   }
 
+  Future<void> _refreshData() async {
+    final refreshedList = PokeApiService.fetchPokemonList();
+    setState(() {
+      _pokemonList = refreshedList;
+    });
+    await refreshedList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,19 +74,23 @@ class _PokemonListState extends State<PokemonList> {
 
           final pokemons = snapshot.data!;
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(10),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.85,
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            child: GridView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.85,
+              ),
+              itemCount: pokemons.length,
+              itemBuilder: (context, index) {
+                final pokemon = pokemons[index];
+                return PokemonCard(pokemon: pokemon);
+              },
             ),
-            itemCount: pokemons.length,
-            itemBuilder: (context, index) {
-              final pokemon = pokemons[index];
-              return PokemonCard(pokemon: pokemon);
-            },
           );
         },
       ),
